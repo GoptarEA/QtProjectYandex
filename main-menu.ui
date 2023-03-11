@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Тестирующая система</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #eee;</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>800</width>
+     <height>600</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>800</width>
+     <height>600</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: qlineargradient(spread:pad, x1:0.025, y1:0.238636, x2:1, y2:1, stop:0 rgba(110, 69, 226, 255), stop:1 rgba(136, 211, 206, 255))</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>30</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>150</number>
+    </property>
+    <property name="topMargin">
+     <number>50</number>
+    </property>
+    <property name="rightMargin">
+     <number>150</number>
+    </property>
+    <property name="bottomMargin">
+     <number>100</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="new_test">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: white;
+	font-size: 36px;
+	border-radius: 16px;
+	padding: 10px;
+	color:  rgba(110, 69, 226, 255);
+}
+
+QPushButton:hover {
+	background-color: #EEE;
+}</string>
+      </property>
+      <property name="text">
+       <string>Создать новый тест</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="recent_tests">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: white;
+	font-size: 36px;
+	border-radius: 16px;
+	padding: 10px;
+	color:  rgba(110, 69, 226, 255);
+}
+
+QPushButton:hover {
+	background-color: #EEE;
+}</string>
+      </property>
+      <property name="text">
+       <string>Созданные тесты</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="exit_btn">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: white;
+	font-size: 36px;
+	border-radius: 16px;
+	padding: 10px;
+	color:  rgba(110, 69, 226, 255);
+}
+
+QPushButton:hover {
+	background-color: #EEE;
+}</string>
+      </property>
+      <property name="text">
+       <string>Выход</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
