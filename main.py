@@ -17,6 +17,8 @@ import sqlite3
 import hashlib
 import os
 
+import datetime
+
 users = sqlite3.connect('users.db')
 users_cur = users.cursor()
 
@@ -32,9 +34,34 @@ def create_db():
     """)
     users.commit()
 
+    works_cur.execute("""CREATE TABLE IF NOT EXISTS works(
+           workid INT PRIMARY KEY AUTOINCREMENT,
+           theme TEXT NOT NULL,
+           varcount INT NOT NULL,
+           excount INT NOT NULL,
+           creation_date TEXT NOT NULL);
+        """)
+    works.commit()
 
-def hashUsersPassword(password):
-    salt = os.urandom(32)
+
+
+def add_new_user(login, password):
+    users_cur.execute("INSERT INTO users VALUES(?, ?);", (login, password))
+    users.commit()
+
+
+def add_new_work(theme, varcount, excount):
+    works_cur.execute("INSERT INTO works VALUES(?, ?);", (theme, varcount, excount, datetime.date.today()))
+
+def check_user(login):
+    users_cur.execute(f"select * from users WHERE login={login}")
+    users_list = users_cur.fetchall()
+    return len(users_list) != 0
+
+
+
+
+def hashUsersPassword(password, salt):
     key = hashlib.pbkdf2_hmac(
         'sha256',
         password.encode('utf-8'),
@@ -42,10 +69,12 @@ def hashUsersPassword(password):
         100000,
         dklen=128
     )
-    return salt, key
+    return salt + key
 
 def check_password(db_password, input_password):
-    pass
+    salt = db_password[:32]
+    password = db_password[32:]
+    return password == hashUsersPassword(input_password, salt)
 
 
 class CloseDialog(QDialog, Ui_Dialog):
