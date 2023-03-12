@@ -1,5 +1,3 @@
-import os
-
 from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog, QFileDialog
 import sys
 from ui.startWindow import Ui_StartWindow
@@ -9,9 +7,9 @@ from ui.roleWindow import Ui_RoleWindow
 from ui.main_menu import Ui_MainMenu
 from ui.dialog_win import Ui_Dialog
 from ui.generate_test import Ui_GenerateTestWindow
+from ui.recent_files import Ui_RecentFiles
 from file_generator import *
 from db_functions import *
-
 
 class CloseDialog(QDialog, Ui_Dialog):
     def __init__(self, *args, **kwargs):
