@@ -49,7 +49,7 @@ def add_new_work(theme, varcount, excount, fileformat, userid):
 def get_all_users_works(userid):
     works_cur.execute(f"SELECT * FROM works;")
     works_list = works_cur.fetchall()
-    return [work for work in works_list if work[4] == userid]
+    return [work for work in works_list if work[5] == userid]
 
 
 def check_user(login):

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog, QFileDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog, QFileDialog, QTableWidgetItem
 import sys
 from ui.startWindow import Ui_StartWindow
 from ui.loginWindow import Ui_LoginWindow
@@ -40,7 +40,12 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
         app_window.setCurrentWidget(menuWindow)
 
     def show_users_works(self, userid):
-        print(get_all_users_works(userid))
+        works = get_all_users_works(userid)
+        self.tableWidget.setRowCount(len(works))
+        for row in range(len(works)):
+            for column in range(5):
+                self.tableWidget.setItem(row, column, QTableWidgetItem(str(works[row][column])))
+
 
 
 class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):

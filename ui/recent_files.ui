@@ -190,31 +190,6 @@ border: solid 1px black;</string>
       </column>
       <column>
        <property name="text">
-        <string>Формат</string>
-       </property>
-       <property name="font">
-        <font>
-         <family>Play</family>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Кол-во заданий</string>
-       </property>
-       <property name="font">
-        <font>
-         <family>Play</family>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-      </column>
-      <column>
-       <property name="text">
         <string>Тема</string>
        </property>
        <property name="font">
@@ -234,6 +209,31 @@ border: solid 1px black;</string>
         <font>
          <family>Play</family>
          <pointsize>8</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Кол-во заданий</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>Play</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Формат</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>Play</family>
+         <pointsize>14</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
