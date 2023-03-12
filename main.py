@@ -30,6 +30,19 @@ class ApplicationWindow(QStackedWidget):
             self.addWidget(widget)
 
 
+class RecentWindow(QMainWindow, Ui_RecentFiles):
+    def __init__(self, *args, **kwargs):
+        super(RecentWindow, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self.return_back.clicked.connect(self.return_to_menu)
+
+    def return_to_menu(self):
+        app_window.setCurrentWidget(menuWindow)
+
+    def show_users_works(self, userid):
+        print(get_all_users_works(userid))
+
+
 class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
     def __init__(self, *args, **kwargs):
         super(GenerateTestWindow, self).__init__(*args, **kwargs)
@@ -37,12 +50,23 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
         self.comboBox.addItems(["Арифм. операции в разл. с.с.", "Переводы между с.с."])
         self.comboBox_2.addItems([".pdf", ".txt", ".docx"])
         self.spinBox_2.setValue(4)
+        self.userid = ""
         self.label_5.setText(os.getcwd())
         self.generate_button.clicked.connect(self.generate_test)
         self.returntomenu.clicked.connect(self.openmenu)
         self.choose_place.clicked.connect(self.choose_folder)
 
+    def set_user_id(self, userid):
+        self.userid = userid
+
     def generate_test(self):
+        add_new_work(
+            self.comboBox.currentText(),
+            self.spinBox.value(),
+            self.spinBox_2.value(),
+            self.comboBox_2.currentText(),
+            self.userid
+        )
         if self.comboBox.currentText() == "Арифм. операции в разл. с.с.":
             for variant_number in range(self.spinBox.value()):
                 print(self.spinBox.value())
@@ -154,6 +178,8 @@ class LoginWindow(QMainWindow, Ui_LoginWindow):
         print(login, password)
         if check_password(password, self.password_input.text()):
             app_window.setCurrentWidget(menuWindow)
+            menuWindow.set_user_id(get_user(self.login_input.text())[0][0])
+            print(get_user(self.login_input.text())[0][0])
         else:
             self.error_label.setText("Введён неверный пароль")
 
@@ -174,26 +200,37 @@ class MenuWindow(QMainWindow, Ui_MainMenu):
     def __init__(self, *args, **kwargs):
         super(MenuWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
-
+        self.userid = ""
         self.new_test.clicked.connect(self.opengeneratewindow)
         self.exit_btn.clicked.connect(self.close_app)
+        self.recent_tests.clicked.connect(self.recent_files)
 
     def close_app(self):
         dialog = CloseDialog()
         dialog.exec()
 
+    def set_user_id(self, userid):
+        self.userid = userid
+
     def opengeneratewindow(self):
         app_window.setCurrentWidget(generateTestWindow)
+        generateTestWindow.set_user_id(self.userid)
+
+    def recent_files(self):
+        app_window.setCurrentWidget(recentWindow)
+        recentWindow.show_users_works(self.userid)
 
 
 if __name__ == '__main__':
     create_db()
+
     app = QApplication(sys.argv)
     startWindow = StartWindow()
     loginWindow = LoginWindow()
     registerWindow = RegisterWindow()
     roleWindow = RoleWindow()
     menuWindow = MenuWindow()
+    recentWindow = RecentWindow()
     generateTestWindow = GenerateTestWindow()
 
     app_window = ApplicationWindow([startWindow,
@@ -201,7 +238,8 @@ if __name__ == '__main__':
                                     registerWindow,
                                     roleWindow,
                                     menuWindow,
-                                    generateTestWindow])
+                                    generateTestWindow,
+                                    recentWindow])
 
     app_window.show()
     sys.exit(app.exec())

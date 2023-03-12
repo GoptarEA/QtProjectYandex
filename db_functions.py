@@ -27,6 +27,8 @@ def create_db():
            theme TEXT NOT NULL,
            varcount INTEGER NOT NULL,
            excount INTEGER NOT NULL,
+           fileformat TEXT NOT NULL,
+           userid INTEGER NOT NULL,
            creation_date TEXT NOT NULL);
         """)
     works.commit()
@@ -38,8 +40,16 @@ def add_new_user(new_login, new_password):
     users.commit()
 
 
-def add_new_work(theme, varcount, excount):
-    works_cur.execute("INSERT INTO works VALUES(?, ?, ?, ?);", (theme, varcount, excount, datetime.date.today()))
+def add_new_work(theme, varcount, excount, fileformat, userid):
+    works_cur.execute(f"INSERT INTO works (theme, varcount, excount, fileformat, userid, creation_date) \
+    VALUES ('{theme}', '{varcount}', '{excount}', '{fileformat}', '{userid}', '{datetime.date.today()}');")
+    works.commit()
+
+
+def get_all_users_works(userid):
+    works_cur.execute(f"SELECT * FROM works;")
+    works_list = works_cur.fetchall()
+    return [work for work in works_list if work[4] == userid]
 
 
 def check_user(login):
