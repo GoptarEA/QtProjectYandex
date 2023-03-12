@@ -109,11 +109,11 @@ def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs):
             answers_subnextrun = answers_nextp.add_run(str(radixs[i % 4 ]))
             answers_subnextrun.subscript = True
 
-    document.save(theme + '.docx')
-    convert(theme + '.docx')
+    document.save('files/' + theme + '.docx')
+    convert('files/' + theme + '.docx')
 
-    answers_document.save(theme + " ОТВЕТЫ.docx")
-    convert(theme + " ОТВЕТЫ.docx")
+    answers_document.save('files/' + theme + " ОТВЕТЫ.docx")
+    convert('files/' + theme + " ОТВЕТЫ.docx")
 
 
 def generate_systems_pdf(number_of_exercises, radixfrom):
@@ -171,8 +171,8 @@ def generate_systems_pdf(number_of_exercises, radixfrom):
             nextrun.font.bold = False
             nextrun.font.name = 'Times New Roman'
 
-    document.save('СР Перевод между системами счисления.docx')
-    convert('СР Перевод между системами счисления.docx')
+    document.save('files/СР Перевод между системами счисления.docx')
+    convert('files/СР Перевод между системами счисления.docx')
 
 
 users = sqlite3.connect('data/users.db')
