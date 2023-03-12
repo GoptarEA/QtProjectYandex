@@ -1,13 +1,12 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog
 import sys
-from startWindow import Ui_StartWindow
-from loginWindow import Ui_LoginWindow
-from registerWindow import Ui_RegisterWindow
-from roleWindow import Ui_RoleWindow
-from main_menu import Ui_MainMenu
-from dialog_win import Ui_Dialog
-from generate_test import Ui_GenerateTestWindow
-from random import randint, choice
+from ui.startWindow import Ui_StartWindow
+from ui.loginWindow import Ui_LoginWindow
+from ui.registerWindow import Ui_RegisterWindow
+from ui.roleWindow import Ui_RoleWindow
+from ui.main_menu import Ui_MainMenu
+from ui.dialog_win import Ui_Dialog
+from ui.generate_test import Ui_GenerateTestWindow
 import sqlite3
 import hashlib
 import os
@@ -15,11 +14,11 @@ import datetime
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from random import randint, choice, sample
+from random import randint, sample
 from pprint import pprint
 import pymorphy2
 from docx2pdf import convert
-
+import base64
 
 
 def system_translation(number, radixresult):
@@ -49,7 +48,6 @@ def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs):
     answers_nextrun.font.size = Pt(16)
     answers_nextrun.font.bold = True
     answers_nextrun.font.name = 'Times New Roman'
-
 
     document = Document()
     nextp = document.add_paragraph()
@@ -173,17 +171,14 @@ def generate_systems_pdf(number_of_exercises, radixfrom):
             nextrun.font.bold = False
             nextrun.font.name = 'Times New Roman'
 
-
     document.save('СР Перевод между системами счисления.docx')
     convert('СР Перевод между системами счисления.docx')
 
 
-
-
-users = sqlite3.connect('users.db')
+users = sqlite3.connect('data/users.db')
 users_cur = users.cursor()
 
-works = sqlite3.connect('works.db')
+works = sqlite3.connect('data/works.db')
 works_cur = works.cursor()
 
 
@@ -205,21 +200,30 @@ def create_db():
     works.commit()
 
 
-
-def add_new_user(login, password):
-    users_cur.execute("INSERT INTO users VALUES(?, ?);", (login, password))
+def add_new_user(new_login, new_password):
+    s = base64.b64encode(new_password).decode('utf-8')
+    users_cur.execute(f"INSERT INTO users (login, password) VALUES ('{new_login}', '{s}');")
     users.commit()
 
 
 def add_new_work(theme, varcount, excount):
     works_cur.execute("INSERT INTO works VALUES(?, ?, ?, ?);", (theme, varcount, excount, datetime.date.today()))
 
+
 def check_user(login):
     print(login)
-    users_cur.execute(f"select * from users;")
+    users_cur.execute(f"SELECT * FROM users;")
     users_list = users_cur.fetchall()
     print(users_list)
-    return login in users_list
+    return any([login in elem for elem in users_list])
+
+
+def get_user(login):
+    print(login)
+    users_cur.execute(f"SELECT * FROM users;")
+    users_list = users_cur.fetchall()
+    print('ok')
+    return [elem for elem in users_list if elem[1] == login]
 
 
 def hashUsersPassword(password, salt):
@@ -234,9 +238,9 @@ def hashUsersPassword(password, salt):
 
 
 def check_password(db_password, input_password):
-    salt = db_password[:32]
-    password = db_password[32:]
-    return password == hashUsersPassword(input_password, salt)
+    salt = base64.b64decode(db_password.encode("utf-8"))[:32]
+    print(db_password == str(base64.b64encode(hashUsersPassword(input_password, salt)), "utf-8"), sep="\n")
+    return db_password == str(base64.b64encode(hashUsersPassword(input_password, salt)), "utf-8")
 
 
 class CloseDialog(QDialog, Ui_Dialog):
@@ -262,12 +266,16 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
     def __init__(self, *args, **kwargs):
         super(GenerateTestWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        self.comboBox.addItems(["Арифм. операции в разл. с.с.", "Переводы между с.с."])
         self.generate_button.clicked.connect(self.generate_test)
+        self.returntomenu.clicked.connect(self.openmenu)
 
     def generate_test(self):
         generate_systems_pdf(8, ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"])
         generate_ariphmetic_pdf("Арифметические операции", 6, ['+', '-', "*"], [2, 4, 8, 16])
 
+    def openmenu(self):
+        app_window.setCurrentWidget(menuWindow)
 
 
 class StartWindow(QMainWindow, Ui_StartWindow):
@@ -298,7 +306,10 @@ class RegisterWindow(QMainWindow, Ui_RegisterWindow):
         self.reg_button.setEnabled(False)
 
     def register_user(self):
-        pass
+        salt = os.urandom(32)
+        password = self.password_input.text()
+        add_new_user(self.login_input.text(), hashUsersPassword(password, salt))
+        app_window.setCurrentWidget(loginWindow)
 
     def login_message(self):
         if check_user(self.login_input.text()):
@@ -335,10 +346,20 @@ class LoginWindow(QMainWindow, Ui_LoginWindow):
         self.login_button.clicked.connect(self.openmenu)
 
     def returnedit(self):
-        self.error_label.setText("Пользователя с данными логином не существует")
+        if not check_user(self.login_input.text()):
+            self.error_label.setText("Такого пользователя не существует")
+            self.login_button.setEnabled(False)
+        else:
+            self.error_label.setText("")
+            self.login_button.setEnabled(True)
 
     def openmenu(self):
-        app_window.setCurrentWidget(menuWindow)
+        login, password = get_user(self.login_input.text())[0][1:]
+        print(login, password)
+        if check_password(password, self.password_input.text()):
+            app_window.setCurrentWidget(menuWindow)
+        else:
+            self.error_label.setText("Введён неверный пароль")
 
 
 class RoleWindow(QMainWindow, Ui_RoleWindow):
@@ -371,7 +392,6 @@ class MenuWindow(QMainWindow, Ui_MainMenu):
 
 if __name__ == '__main__':
     create_db()
-
     app = QApplication(sys.argv)
     startWindow = StartWindow()
     loginWindow = LoginWindow()
