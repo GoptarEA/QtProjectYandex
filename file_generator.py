@@ -26,6 +26,25 @@ def generate_exercise(numbertasks, operation, radix):
                        str(int(item[1], radix))), radix) for item in res]
     return res, resanswers
 
+def generate_ariphmetic_txt(theme, number_of_exercises, operations, radixs, fileformat, filedirectory, variant_number):
+    f = open(filedirectory + "/" + theme + " Вариант " + variant_number + '.txt', 'w')
+
+    f.write(theme + "\n")
+    f.write("Вариант " + variant_number + "\n")
+    points = 'абвгдежзиклмн'
+    for i in range(number_of_exercises):
+        f.write('№ ' + str(i + 1) + ". Выполните арифметические операции:" + "\n")
+        exercises = generate_exercise(6, operations[i % 3], radixs[i % 4])
+        for item, point in zip(exercises[0], points):
+            f.write("\t" + point + ") " + item[0])
+    f.close()
+
+
+
+
+
+
+
 
 def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs, fileformat, filedirectory, variant_number):
     print("сюда дошло")
