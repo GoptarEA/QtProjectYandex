@@ -1,3 +1,5 @@
+import os
+
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -25,7 +27,8 @@ def generate_exercise(numbertasks, operation, radix):
     return res, resanswers
 
 
-def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs):
+def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs, fileformat, filedirectory, variant_number):
+    print("сюда дошло")
     answers_document = Document()
     answers_nextp = answers_document.add_paragraph()
     answers_nextp.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -94,14 +97,19 @@ def generate_ariphmetic_pdf(theme, number_of_exercises, operations, radixs):
             answers_subnextrun = answers_nextp.add_run(str(radixs[i % 4]))
             answers_subnextrun.subscript = True
 
-    document.save('files/' + theme + '.docx')
-    convert('files/' + theme + '.docx')
+    if fileformat == ".docx":
+        document.save(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + '.docx')
+        answers_document.save(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + " ОТВЕТЫ.docx")
+    else:
+        document.save(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + '.docx')
+        answers_document.save(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + " ОТВЕТЫ.docx")
+        convert(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + '.docx')
+        convert(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + " ОТВЕТЫ.docx")
+        os.remove(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + '.docx')
+        os.remove(filedirectory + "/" + theme + " Вариант " + str(variant_number + 1) + " ОТВЕТЫ.docx")
 
-    answers_document.save('files/' + theme + " ОТВЕТЫ.docx")
-    convert('files/' + theme + " ОТВЕТЫ.docx")
 
-
-def generate_systems_pdf(number_of_exercises, radixfrom):
+def generate_systems_pdf(number_of_exercises, radixfrom, fileformat, filedirectory, variant_number):
     document = Document()
     nextp = document.add_paragraph()
     nextp.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -156,5 +164,14 @@ def generate_systems_pdf(number_of_exercises, radixfrom):
             nextrun.font.bold = False
             nextrun.font.name = 'Times New Roman'
 
-    document.save('files/СР Перевод между системами счисления.docx')
-    convert('files/СР Перевод между системами счисления.docx')
+    if fileformat == ".docx":
+        document.save(filedirectory + "/" + 'СР Перевод между системами счисления' +
+                      " Вариант " + str(variant_number) + '.docx')
+    else:
+        document.save(
+            filedirectory + "/" + 'СР Перевод между системами счисления' +
+            " Вариант " + str(variant_number + 1) + '.docx')
+        convert(filedirectory + "/" + 'СР Перевод между системами счисления' +
+                " Вариант " + str(variant_number + 1) + '.docx')
+        os.remove(filedirectory + "/" + 'СР Перевод между системами счисления' +
+                  " Вариант " + str(variant_number + 1) + '.docx')

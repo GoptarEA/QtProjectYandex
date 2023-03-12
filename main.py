@@ -1,4 +1,6 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog
+import os
+
+from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog, QFileDialog
 import sys
 from ui.startWindow import Ui_StartWindow
 from ui.loginWindow import Ui_LoginWindow
@@ -35,15 +37,43 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
         super(GenerateTestWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self.comboBox.addItems(["Арифм. операции в разл. с.с.", "Переводы между с.с."])
+        self.comboBox_2.addItems([".pdf", ".txt", ".docx"])
+        self.spinBox_2.setValue(4)
+        self.label_5.setText(os.getcwd())
         self.generate_button.clicked.connect(self.generate_test)
         self.returntomenu.clicked.connect(self.openmenu)
+        self.choose_place.clicked.connect(self.choose_folder)
 
     def generate_test(self):
-        generate_systems_pdf(8, ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"])
-        generate_ariphmetic_pdf("Арифметические операции", 6, ['+', '-', "*"], [2, 4, 8, 16])
+        if self.comboBox.currentText() == "Арифм. операции в разл. с.с.":
+            for variant_number in range(self.spinBox.value()):
+                print(self.spinBox.value())
+                generate_ariphmetic_pdf(
+                    "Арифметические операции",
+                    self.spinBox_2.value(),
+                    ['+', '-', "*"],
+                    [2, 4, 8, 16],
+                    self.comboBox_2.currentText(),
+                    self.label_5.text(),
+                    variant_number
+                )
+        elif self.comboBox.currentText() == "Переводы между с.с.":
+            for variant_number in range(self.spinBox.value()):
+                generate_systems_pdf(
+                    8,
+                    ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
+                    self.comboBox_2.currentText(),
+                    self.label_5.text(),
+                    variant_number
+                )
+
 
     def openmenu(self):
         app_window.setCurrentWidget(menuWindow)
+
+    def choose_folder(self):
+        dirlist = QFileDialog.getExistingDirectory(self,"Выбрать папку",".")
+        self.label_5.setText(dirlist)
 
 
 class StartWindow(QMainWindow, Ui_StartWindow):
