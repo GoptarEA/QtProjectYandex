@@ -72,7 +72,9 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
             self.comboBox_2.currentText(),
             self.userid
         )
-        if self.comboBox.currentText() == "Арифм. операции в разл. с.с.":
+        generate_ariphmetic_txt()
+        if self.comboBox.currentText() == "Арифм. операции в разл. с.с." and \
+                self.comboBox_2.currentText() in [".pdf", ".docx"]:
             for variant_number in range(self.spinBox.value()):
                 print(self.spinBox.value())
                 generate_ariphmetic_pdf(
@@ -84,7 +86,8 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
                     self.label_5.text(),
                     variant_number
                 )
-        elif self.comboBox.currentText() == "Переводы между с.с.":
+        elif self.comboBox.currentText() == "Переводы между с.с." and \
+                self.comboBox_2.currentText() in [".pdf", ".docx"]:
             for variant_number in range(self.spinBox.value()):
                 generate_systems_pdf(
                     8,
@@ -93,6 +96,20 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
                     self.label_5.text(),
                     variant_number
                 )
+        elif self.comboBox.currentText() == "Арифм. операции в разл. с.с." and self.comboBox_2.currentText() == ".txt":
+            for variant_number in range(self.spinBox.value()):
+                print(self.spinBox.value())
+                generate_ariphmetic_txt(
+                    "Арифметические операции",
+                    self.spinBox_2.value(),
+                    ['+', '-', "*"],
+                    [2, 4, 8, 16],
+                    self.comboBox_2.currentText(),
+                    self.label_5.text(),
+                    variant_number
+                )
+        elif self.comboBox.currentText() == "Переводы между с.с." and self.comboBox_2.currentText() == ".txt":
+            pass
 
 
     def openmenu(self):
