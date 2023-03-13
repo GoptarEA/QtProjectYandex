@@ -1,4 +1,13 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog, QFileDialog, QTableWidgetItem
+from PyQt6.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QStackedWidget,
+    QDialog,
+    QFileDialog,
+    QTableWidgetItem,
+    QMessageBox
+)
+from PyQt6 import QtCore, QtGui, QtWidgets
 import sys
 from ui.startWindow import Ui_StartWindow
 from ui.loginWindow import Ui_LoginWindow
@@ -10,6 +19,7 @@ from ui.generate_test import Ui_GenerateTestWindow
 from ui.recent_files import Ui_RecentFiles
 from file_generator import *
 from db_functions import *
+
 
 class CloseDialog(QDialog, Ui_Dialog):
     def __init__(self, *args, **kwargs):
@@ -35,6 +45,10 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
         super(RecentWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self.return_back.clicked.connect(self.return_to_menu)
+        self.generate.clicked.connect(self.generate_work)
+
+    def change_row_data(self, *params):
+        pass
 
     def return_to_menu(self):
         app_window.setCurrentWidget(menuWindow)
@@ -46,6 +60,60 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
             for column in range(5):
                 self.tableWidget.setItem(row, column, QTableWidgetItem(str(works[row][column])))
 
+    def generate_work(self):
+        if len(self.tableWidget.selectionModel().selectedRows()) != 1:
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Выберите только одну строку!")
+            msg.exec()
+        else:
+            params = [self.tableWidget.item(self.tableWidget.selectionModel().selectedRows()[0].row(), i).text()
+                      for i in range(5)]
+            print(params)
+
+
+            if params[1] == "Арифм. операции в разл. с.с." and \
+                    params[4] in [".pdf", ".docx"]:
+                for variant_number in range(int(params[2])):
+                    generate_ariphmetic_pdf(
+                        "Арифметические операции",
+                        int(params[3]),
+                        ['+', '-', "*"],
+                        [2, 4, 8, 16],
+                        params[4],
+                        "./files",
+                        variant_number + 1
+                    )
+            elif params[1] == "Переводы между с.с." and \
+                    params[4] in [".pdf", ".docx"]:
+                for variant_number in range(int(params[2])):
+                    generate_systems_pdf(
+                        8,
+                        ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
+                        params[4],
+                        "./files",
+                        variant_number + 1
+                    )
+            elif params[1] == "Арифм. операции в разл. с.с." and params[4] == ".txt":
+                for variant_number in range(int(params[2])):
+                    generate_ariphmetic_txt(
+                        "Арифметические операции",
+                        int(params[3]),
+                        ['+', '-', "*"],
+                        [2, 4, 8, 16],
+                        params[4],
+                        "./files",
+                        variant_number + 1
+                    )
+            elif params[1] == "Переводы между с.с." and params[4] == ".txt":
+                for variant_number in range(int(params[2])):
+                    generate_systems_txt(
+                        8,
+                        ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
+                        params[4],
+                        "./files",
+                        variant_number + 1
+                    )
 
 
 class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
