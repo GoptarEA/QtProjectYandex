@@ -33,16 +33,45 @@ def generate_ariphmetic_txt(theme, number_of_exercises, operations, radixs, file
     f.write("Вариант " + str(variant_number) + "\n")
     points = 'абвгдежзиклмн'
     for i in range(number_of_exercises):
-        f.write('№ ' + str(i + 1) + ". Выполните арифметические операции:" + "\n")
+        f.write('№ ' + str(i + 1) + ". Выполните арифметические операции в " + str(radixs[i % 4]) + " с.с.:" + "\n")
         exercises = generate_exercise(6, operations[i % 3], radixs[i % 4])
         for item, point in zip(exercises[0], points):
-            f.write("\t" + point + ") " + item[0])
+            f.write("\t" + point + ") " + item[0] + " " + operations[i % 3] + " "+ item[1])
+            f.write("\n")
     f.close()
 
 
+def generate_systems_txt(number_of_exercises, radixfrom, fileformat, filedirectory, variant_number):
+    f = open(filedirectory + "/" + "СР Перевод между системами счисления" + " Вариант "
+             + str(variant_number) + '.txt', 'w')
 
+    f.write("Cамостоятельная работа" + "\n")
+    f.write("Перевод между системами счисления" + "\n")
 
+    points = 'абвгдежзиклмн'
 
+    morph = pymorphy2.MorphAnalyzer()
+
+    d = {
+        "двоичная": 2,
+        "четверичная": 4,
+        "восьмеричная": 8,
+        "шестнадцатеричная": 16
+    }
+
+    for exer in range(number_of_exercises):
+        systems = sample(radixfrom, 2)
+
+        word1 = morph.parse(systems[0])[0].inflect({"ADJF", "femn", "loct"})[0]
+        word2 = morph.parse(systems[1])[0].inflect({"ADJF", "femn", "accs"})[0]
+        f.write('№ ' + str(exer + 1) + ". Выполните перевод из " +
+                                word1 + " в " + word2 + "\n")
+        exercises = [system_translation(randint(10, 1000), d[systems[0]]) for i in range(4)]
+        pprint(exercises)
+        for item, point in zip(exercises, points):
+            f.write("\t" + point + ") " + item + "\n")
+
+    f.close()
 
 
 

@@ -84,7 +84,7 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
                     [2, 4, 8, 16],
                     self.comboBox_2.currentText(),
                     self.label_5.text(),
-                    variant_number
+                    variant_number + 1
                 )
         elif self.comboBox.currentText() == "Переводы между с.с." and \
                 self.comboBox_2.currentText() in [".pdf", ".docx"]:
@@ -94,7 +94,7 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
                     ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
                     self.comboBox_2.currentText(),
                     self.label_5.text(),
-                    variant_number
+                    variant_number + 1
                 )
         elif self.comboBox.currentText() == "Арифм. операции в разл. с.с." and self.comboBox_2.currentText() == ".txt":
             for variant_number in range(self.spinBox.value()):
@@ -106,10 +106,17 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
                     [2, 4, 8, 16],
                     self.comboBox_2.currentText(),
                     self.label_5.text(),
-                    variant_number
+                    variant_number + 1
                 )
         elif self.comboBox.currentText() == "Переводы между с.с." and self.comboBox_2.currentText() == ".txt":
-            pass
+            for variant_number in range(self.spinBox.value()):
+                generate_systems_txt(
+                    8,
+                    ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
+                    self.comboBox_2.currentText(),
+                    self.label_5.text(),
+                    variant_number + 1
+                )
 
 
     def openmenu(self):
@@ -245,16 +252,6 @@ class MenuWindow(QMainWindow, Ui_MainMenu):
 
 if __name__ == '__main__':
     create_db()
-
-    generate_ariphmetic_txt(
-        "Арифметические операции",
-        2,
-        ['+', '-', "*"],
-        [2, 4, 8, 16],
-        2,
-        "./files",
-        1
-    )
     app = QApplication(sys.argv)
     startWindow = StartWindow()
     loginWindow = LoginWindow()
