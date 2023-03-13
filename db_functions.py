@@ -7,10 +7,10 @@ import base64
 
 
 
-users = sqlite3.connect('data/users.db')
+users = sqlite3.connect(r'C:\Users\Евгений\PycharmProjects\pythonProject3\data\users.db')
 users_cur = users.cursor()
 
-works = sqlite3.connect('data/works.db')
+works = sqlite3.connect(r'C:\Users\Евгений\PycharmProjects\pythonProject3\data\works.db')
 works_cur = works.cursor()
 
 
