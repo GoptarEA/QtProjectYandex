@@ -27,10 +27,10 @@ def generate_exercise(numbertasks, operation, radix):
     return res, resanswers
 
 def generate_ariphmetic_txt(theme, number_of_exercises, operations, radixs, fileformat, filedirectory, variant_number):
-    f = open(filedirectory + "/" + theme + " Вариант " + variant_number + '.txt', 'w')
+    f = open(filedirectory + "/" + theme + " Вариант " + str(variant_number) + '.txt', 'w')
 
     f.write(theme + "\n")
-    f.write("Вариант " + variant_number + "\n")
+    f.write("Вариант " + str(variant_number) + "\n")
     points = 'абвгдежзиклмн'
     for i in range(number_of_exercises):
         f.write('№ ' + str(i + 1) + ". Выполните арифметические операции:" + "\n")

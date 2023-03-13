@@ -72,7 +72,7 @@ class GenerateTestWindow(QMainWindow, Ui_GenerateTestWindow):
             self.comboBox_2.currentText(),
             self.userid
         )
-        generate_ariphmetic_txt()
+
         if self.comboBox.currentText() == "Арифм. операции в разл. с.с." and \
                 self.comboBox_2.currentText() in [".pdf", ".docx"]:
             for variant_number in range(self.spinBox.value()):
@@ -246,6 +246,15 @@ class MenuWindow(QMainWindow, Ui_MainMenu):
 if __name__ == '__main__':
     create_db()
 
+    generate_ariphmetic_txt(
+        "Арифметические операции",
+        2,
+        ['+', '-', "*"],
+        [2, 4, 8, 16],
+        2,
+        "./files",
+        1
+    )
     app = QApplication(sys.argv)
     startWindow = StartWindow()
     loginWindow = LoginWindow()
