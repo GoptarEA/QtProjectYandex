@@ -46,6 +46,13 @@ def add_new_work(theme, varcount, excount, fileformat, userid):
     works.commit()
 
 
+def change_work_params(id, newparams):
+    works_cur.execute(f"UPDATE works SET varcount = '{str(newparams[0])}', \
+    excount = '{newparams[1]}', fileformat = '{newparams[2]}' WHERE workid = '{str(id)}'")
+    works.commit()
+
+
+
 def get_all_users_works(userid):
     works_cur.execute(f"SELECT * FROM works;")
     works_list = works_cur.fetchall()

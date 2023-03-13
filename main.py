@@ -17,6 +17,7 @@ from ui.main_menu import Ui_MainMenu
 from ui.dialog_win import Ui_Dialog
 from ui.generate_test import Ui_GenerateTestWindow
 from ui.recent_files import Ui_RecentFiles
+from ui.change_recent import Ui_ChangeRecent
 from file_generator import *
 from db_functions import *
 
@@ -40,15 +41,59 @@ class ApplicationWindow(QStackedWidget):
             self.addWidget(widget)
 
 
+class ChangeRecent(QDialog, Ui_ChangeRecent):
+    def __init__(self, params, row_number):
+        super(ChangeRecent, self).__init__()
+        self.setupUi(self)
+        self.comboBox.addItems([".pdf", ".txt", ".docx"])
+        self.spinBox.setValue(2)
+        self.spinBox_2.setValue(2)
+        self.change.clicked.connect(self.make_changes)
+        self.discard.clicked.connect(lambda: self.close())
+        self.params = params
+        self.row_number = row_number
+
+    def make_changes(self):
+        change_work_params(
+            self.params[0],
+            [self.spinBox.text(), self.spinBox_2.text(), self.comboBox.currentText()])
+        msg = QMessageBox()
+        msg.setWindowTitle("Изменения внесены")
+        msg.setText("Изменения успешно внесены!")
+        msg.exec()
+
+        recentWindow.change_row_data(
+            [self.spinBox.text(), self.spinBox_2.text(), self.comboBox.currentText()],
+            self.row_number
+        )
+        self.close()
+
+
 class RecentWindow(QMainWindow, Ui_RecentFiles):
     def __init__(self, *args, **kwargs):
         super(RecentWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self.return_back.clicked.connect(self.return_to_menu)
         self.generate.clicked.connect(self.generate_work)
+        self.change_properties.clicked.connect(self.change_recent)
 
-    def change_row_data(self, *params):
-        pass
+    def change_row_data(self, params, row_number):
+        self.tableWidget.item(row_number, 2).setText(params[0])
+        self.tableWidget.item(row_number, 3).setText(params[1])
+        self.tableWidget.item(row_number, 4).setText(params[2])
+
+    def change_recent(self):
+        if len(self.tableWidget.selectionModel().selectedRows()) != 1:
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Выберите только одну строку!")
+            msg.exec()
+        else:
+            params = [self.tableWidget.item(self.tableWidget.selectionModel().selectedRows()[0].row(), i).text()
+                      for i in range(5)]
+            print(params)
+            dialog = ChangeRecent(params, self.tableWidget.selectionModel().selectedRows()[0].row())
+            dialog.exec()
 
     def return_to_menu(self):
         app_window.setCurrentWidget(menuWindow)
@@ -69,9 +114,6 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
         else:
             params = [self.tableWidget.item(self.tableWidget.selectionModel().selectedRows()[0].row(), i).text()
                       for i in range(5)]
-            print(params)
-
-
             if params[1] == "Арифм. операции в разл. с.с." and \
                     params[4] in [".pdf", ".docx"]:
                 for variant_number in range(int(params[2])):
@@ -320,6 +362,7 @@ class MenuWindow(QMainWindow, Ui_MainMenu):
 
 if __name__ == '__main__':
     create_db()
+
     app = QApplication(sys.argv)
     startWindow = StartWindow()
     loginWindow = LoginWindow()
@@ -328,7 +371,6 @@ if __name__ == '__main__':
     menuWindow = MenuWindow()
     recentWindow = RecentWindow()
     generateTestWindow = GenerateTestWindow()
-
     app_window = ApplicationWindow([startWindow,
                                     loginWindow,
                                     registerWindow,
