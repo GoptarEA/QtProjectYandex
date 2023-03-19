@@ -44,6 +44,7 @@ class ChooseDirectoryDialog(QDialog, Ui_ChooseDirectory):
 
     def generate(self):
         recentWindow.generate_work(self.directory.text())
+        self.close()
 
 
 class ApplicationWindow(QStackedWidget):
@@ -98,7 +99,8 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
         self.tableWidget.item(row_number, 4).setText(params[2])
 
     def open_file_dialog(self):
-        ChooseDirectoryDialog()
+        choose = ChooseDirectoryDialog()
+        choose.exec()
 
     def change_recent(self):
         if len(self.tableWidget.selectionModel().selectedRows()) != 1:
