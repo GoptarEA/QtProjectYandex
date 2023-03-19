@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QMessageBox
 )
-from PyQt6 import QtCore, QtGui, QtWidgets
 import sys
 from ui.startWindow import Ui_StartWindow
 from ui.loginWindow import Ui_LoginWindow
@@ -18,6 +17,7 @@ from ui.dialog_win import Ui_Dialog
 from ui.generate_test import Ui_GenerateTestWindow
 from ui.recent_files import Ui_RecentFiles
 from ui.change_recent import Ui_ChangeRecent
+from ui.choose_directory import Ui_ChooseDirectory
 from file_generator import *
 from db_functions import *
 
@@ -29,6 +29,21 @@ class CloseDialog(QDialog, Ui_Dialog):
 
         self.pushButton.clicked.connect(lambda: sys.exit(app.exec()))
         self.pushButton_2.clicked.connect(lambda: self.close())
+
+
+class ChooseDirectoryDialog(QDialog, Ui_ChooseDirectory):
+    def __init__(self):
+        super(ChooseDirectoryDialog, self).__init__()
+        self.setupUi(self)
+        self.choose_btn.clicked.connect(self.choose_directory)
+        self.generate_btn.clicked.connect(self.generate)
+
+    def choose_directory(self):
+        dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
+        self.directory.setText(dirlist)
+
+    def generate(self):
+        recentWindow.generate_work(self.directory.text())
 
 
 class ApplicationWindow(QStackedWidget):
@@ -74,13 +89,16 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
         super(RecentWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self.return_back.clicked.connect(self.return_to_menu)
-        self.generate.clicked.connect(self.generate_work)
+        self.generate.clicked.connect(self.open_file_dialog)
         self.change_properties.clicked.connect(self.change_recent)
 
     def change_row_data(self, params, row_number):
         self.tableWidget.item(row_number, 2).setText(params[0])
         self.tableWidget.item(row_number, 3).setText(params[1])
         self.tableWidget.item(row_number, 4).setText(params[2])
+
+    def open_file_dialog(self):
+        ChooseDirectoryDialog()
 
     def change_recent(self):
         if len(self.tableWidget.selectionModel().selectedRows()) != 1:
@@ -105,7 +123,8 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
             for column in range(5):
                 self.tableWidget.setItem(row, column, QTableWidgetItem(str(works[row][column])))
 
-    def generate_work(self):
+    def generate_work(self, directory):
+
         if len(self.tableWidget.selectionModel().selectedRows()) != 1:
             msg = QMessageBox()
             msg.setWindowTitle("Ошибка")
@@ -123,7 +142,7 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
                         ['+', '-', "*"],
                         [2, 4, 8, 16],
                         params[4],
-                        "./files",
+                        directory,
                         variant_number + 1
                     )
             elif params[1] == "Переводы между с.с." and \
@@ -133,7 +152,7 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
                         8,
                         ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
                         params[4],
-                        "./files",
+                        directory,
                         variant_number + 1
                     )
             elif params[1] == "Арифм. операции в разл. с.с." and params[4] == ".txt":
@@ -144,7 +163,7 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
                         ['+', '-', "*"],
                         [2, 4, 8, 16],
                         params[4],
-                        "./files",
+                        directory,
                         variant_number + 1
                     )
             elif params[1] == "Переводы между с.с." and params[4] == ".txt":
@@ -153,7 +172,7 @@ class RecentWindow(QMainWindow, Ui_RecentFiles):
                         8,
                         ["двоичная", "четверичная", "восьмеричная", "шестнадцатеричная"],
                         params[4],
-                        "./files",
+                        directory,
                         variant_number + 1
                     )
 

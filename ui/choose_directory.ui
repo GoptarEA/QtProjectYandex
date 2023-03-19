@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>112</height>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="directory">
    <property name="geometry">
     <rect>
      <x>290</x>
@@ -53,6 +53,28 @@ border-radius: 8px;</string>
    </property>
    <property name="text">
     <string>Выбрать папку:</string>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="generate_btn">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>100</y>
+     <width>261</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Play</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Сгенерировать</string>
    </property>
    <property name="autoDefault">
     <bool>true</bool>
